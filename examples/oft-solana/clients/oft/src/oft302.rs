@@ -161,38 +161,38 @@ impl Oft302 {
 
 #[derive(Debug, Clone)]
 pub struct Oft302Accounts {
-    payer: Pubkey,
-    token_mint: Pubkey,
-    token_escrow: Pubkey,
-    peer_address: Option<[u8; 32]>,
+    pub payer: Pubkey,
+    pub token_mint: Pubkey,
+    pub token_escrow: Pubkey,
+    pub peer_address: Option<[u8; 32]>,
 }
 
 #[derive(Debug, Clone)]
 pub struct Oft302SendAccounts {
-    payer: Pubkey,
-    token_mint: Pubkey,
-    token_escrow: Pubkey,
-    token_source: Pubkey,
-    peer_address: Option<[u8; 32]>,
+    pub payer: Pubkey,
+    pub token_mint: Pubkey,
+    pub token_escrow: Pubkey,
+    pub token_source: Pubkey,
+    pub peer_address: Option<[u8; 32]>,
 }
 
 #[derive(Debug, Clone)]
 pub struct Oft302QuoteParams {
-    dst_eid: u32,
-    to: [u8; 32],
-    amount_ld: u64,
-    min_amount_ld: u64,
+    pub dst_eid: u32,
+    pub to: [u8; 32],
+    pub amount_ld: u64,
+    pub min_amount_ld: u64,
 }   
 
 #[derive(Debug, Clone)]
 pub struct Oft302Programs {
-    endpoint: Option<Pubkey>,
+    pub endpoint: Option<Pubkey>,
 }
 
 #[derive(Debug, Clone)]
 pub struct Oft302SendPrograms {
-    endpoint: Option<Pubkey>,
-    token: Option<Pubkey>,
+    pub endpoint: Option<Pubkey>,
+    pub token: Option<Pubkey>,
 }
 
 #[cfg(test)]
