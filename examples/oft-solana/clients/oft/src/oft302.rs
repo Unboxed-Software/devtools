@@ -1,7 +1,7 @@
 use base64::Engine;
 use borsh::BorshDeserialize;
 use endpoint_client::{programs::ENDPOINT_ID, Endpoint};
-use solana_client::{nonblocking::rpc_client::RpcClient, rpc_config::RpcSimulateTransactionConfig};
+use solana_client::{rpc_client::RpcClient, rpc_config::RpcSimulateTransactionConfig};
 use solana_program::{instruction::AccountMeta, pubkey::Pubkey};
 use solana_sdk::{instruction::Instruction, message::Message, pubkey};
 use uln_client::uln::Uln;
