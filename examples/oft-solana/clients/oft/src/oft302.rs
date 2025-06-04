@@ -6,7 +6,7 @@ use solana_program::{instruction::AccountMeta, pubkey::Pubkey};
 use solana_sdk::{instruction::Instruction, message::Message, pubkey};
 use uln_client::uln::Uln;
 
-use crate::{accounts::fetch_peer_config, event_pda::EventPDA, instructions::{SendBuilder, SendInstructionArgs}, oft_pda::OftPDA, types::MessagingFee};
+use crate::{accounts::fetch_peer_config_async, event_pda::EventPDA, instructions::{SendBuilder, SendInstructionArgs}, oft_pda::OftPDA, types::MessagingFee};
 
 const TOKEN_PROGRAM_ID: Pubkey = pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 
@@ -41,8 +41,7 @@ impl Oft302 {
             let peer_addr = if let Some(peer_address) = accounts.peer_address {
                 peer_address
             } else {
-                let blocking_rpc = solana_client::rpc_client::RpcClient::new(self.rpc.url().to_string());
-                let peer_config = fetch_peer_config(&blocking_rpc, &peer).map_err(|err| err.to_string())?;
+                let peer_config = fetch_peer_config_async(&self.rpc, &peer).await.map_err(|err| err.to_string())?;
                 peer_config.data.peer_address
             };
 
@@ -101,8 +100,7 @@ impl Oft302 {
             let peer_addr = if let Some(peer_address) = accounts.peer_address {
                 peer_address
             } else {
-                let blocking_rpc = solana_client::rpc_client::RpcClient::new(self.rpc.url().to_string());
-                let peer_config = fetch_peer_config(&blocking_rpc, &peer).map_err(|err| err.to_string())?;
+                let peer_config = fetch_peer_config_async(&self.rpc, &peer).await.map_err(|err| err.to_string())?;
                 peer_config.data.peer_address
             };
 
