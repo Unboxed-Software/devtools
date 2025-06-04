@@ -41,7 +41,8 @@ impl Oft302 {
             let peer_addr = if let Some(peer_address) = accounts.peer_address {
                 peer_address
             } else {
-                let peer_config = fetch_peer_config(&self.rpc, &peer).map_err(|err| err.to_string())?;
+                let blocking_rpc = solana_client::rpc_client::RpcClient::new(self.rpc.url().to_string());
+                let peer_config = fetch_peer_config(&blocking_rpc, &peer).map_err(|err| err.to_string())?;
                 peer_config.data.peer_address
             };
 
@@ -71,7 +72,7 @@ impl Oft302 {
         ix.program_id = self.pda.program;
         ix.accounts.extend(remaining_accounts);
 
-        let recent_blockhash = self.rpc.get_latest_blockhash().unwrap();
+        let recent_blockhash = self.rpc.get_latest_blockhash().await.map_err(|e| e.to_string())?;
         let message = Message::new_with_blockhash(&[ix], Some(&accounts.payer), &recent_blockhash);
 
         let transaction = solana_sdk::transaction::Transaction::new_unsigned(
@@ -82,7 +83,7 @@ impl Oft302 {
             sig_verify: false,
             ..RpcSimulateTransactionConfig::default()
         };
-        let result = self.rpc.simulate_transaction_with_config(&transaction, config).unwrap();
+        let result = self.rpc.simulate_transaction_with_config(&transaction, config).await.map_err(|e| e.to_string())?;
         let decoded = base64::engine::general_purpose::STANDARD.decode(result.value.return_data.unwrap().data.0).unwrap();
 
         Ok(MessagingFee::try_from_slice(&decoded).map_err(|err| format!("Failed to parse messaging fee: {}", err))?)
@@ -100,7 +101,8 @@ impl Oft302 {
             let peer_addr = if let Some(peer_address) = accounts.peer_address {
                 peer_address
             } else {
-                let peer_config = fetch_peer_config(&self.rpc, &peer).map_err(|err| err.to_string())?;
+                let blocking_rpc = solana_client::rpc_client::RpcClient::new(self.rpc.url().to_string());
+                let peer_config = fetch_peer_config(&blocking_rpc, &peer).map_err(|err| err.to_string())?;
                 peer_config.data.peer_address
             };
 
@@ -148,7 +150,7 @@ impl Oft302 {
     }
 
     pub async fn get_send_library_program(&self, endpoint: Endpoint, oft_store: Pubkey, remote_eid: u32) -> Result<Uln, String> {
-        let (_, send_lib_program_id, _) = endpoint.get_send_library(oft_store, remote_eid).await.unwrap();
+        let (_, send_lib_program_id, _) = endpoint.get_send_library(oft_store, remote_eid).await.map_err(|e| e.to_string())?;
 
         if send_lib_program_id.is_none() {
             return Err("Send library not initialized or blocked message library".to_string());
